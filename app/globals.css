@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* Systems Research @ IBA: Design Tokens */
+
+/* Fonts only: `inline` is required here so these resolve against the CSS
+   variables next/font sets via className on <html> (--font-display etc.),
+   rather than Tailwind trying to inline a literal value at build time. */
+@theme inline {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+  --font-display: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* Everything else stays in a plain (non-inline) @theme block on purpose:
+   `inline` bakes the literal value directly into each generated utility
+   (e.g. `.bg-paper { background-color: #fafaf9 }`), which means nothing
+   ever reads the --color-* custom property at runtime. Utilities generated
+   from a plain @theme reference it instead (`background-color:
+   var(--color-paper)`), which is what makes the dev theme switcher's
+   runtime var() overrides actually take effect. */
+@theme {
+  /* Color palette: Signal on Paper (refined accent). Plain color values:
+     Tailwind v4 supports opacity modifiers (e.g. bg-signal/50) on any
+     @theme color automatically via color-mix(), so the old v3-only
+     "<alpha-value>" placeholder isn't needed and actually breaks utility
+     generation for the token entirely when left in. */
+  --color-paper: #fafaf9;
+  --color-paper-raised: #ffffff;
+  --color-ink: #15161b;
+  --color-ink-muted: #5b5e68;
+  --color-ink-faint: #9498a2;
+  --color-hairline: #e7e7e3;
+  --color-hairline-strong: #d4d4ce;
+  --color-signal: #0d9488;
+  --color-signal-dim: #f0fdfa;
+  --color-signal-ink: #0f766e;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+
+  /* Shadows */
+  --shadow-float: 0 8px 24px rgb(21 22 27 / 0.06);
+  --shadow-nav: 0 4px 20px rgb(21 22 27 / 0.06), 0 1px 2px rgb(21 22 27 / 0.04);
+}
+
+/* Aurora glow colors: plain custom properties, not @theme (these aren't
+   meant to become Tailwind utilities, just values body's background reads
+   directly). Defaults here match the light-teal theme above, derived via
+   lib/color.ts's deriveAuroraPalette('#0d9488', 'light') by hand so the
+   server-rendered page looks right before any JS runs; lib/themes.ts's
+   applyTheme() overwrites these at runtime to match whatever accent/mode
+   the dev theme switcher picks. */
+:root {
+  --aurora-1: hsl(174.7 72% 52% / 0.34);
+  --aurora-2: hsl(142.7 72% 52% / 0.289);
+  --aurora-3: hsl(206.7 72% 52% / 0.289);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    @apply bg-paper;
+  }
+
+  body {
+    @apply text-ink font-sans;
+    /* Aurora glow near the top: applied on body itself, not a per-page
+       wrapper, so every route gets it automatically. --aurora-* come from
+       :root above and are re-derived per accent/mode by applyTheme(). The
+       dot-grid used to live here too as a static radial-gradient, but it's
+       now rendered by components/interactive-dot-grid.tsx (a canvas) so
+       individual dots can react to the cursor. A CSS background pattern
+       can't address individual cells in response to mouse position. */
+    background-repeat: no-repeat;
+    background-image:
+      radial-gradient(circle at 8% -5%, var(--aurora-1), transparent 32%),
+      radial-gradient(circle at 45% -8%, var(--aurora-2), transparent 30%),
+      radial-gradient(circle at 82% 0%, var(--aurora-3), transparent 28%);
+  }
+
+  /* Typography hierarchy */
+  h1 {
+    @apply font-display font-bold leading-tight text-[clamp(32px,5.5vw,56px)] tracking-tight;
+  }
+
+  h2 {
+    @apply font-display font-semibold leading-tight text-[clamp(24px,4vw,36px)] tracking-tight;
+  }
+
+  h3 {
+    @apply font-display font-semibold leading-tight text-[clamp(18px,2.5vw,22px)] tracking-tight;
+  }
+
+  p {
+    @apply font-serif text-[clamp(17px,1.5vw,19px)] leading-relaxed;
+  }
+
+  /* Focus ring for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-signal ring-offset-2;
+  }
+
+  /* Code */
+  code {
+    @apply font-mono text-[clamp(13px,1.2vw,14px)] font-medium;
+  }
+
+  /* Remove default borders from elements and apply hairline */
+  * {
+    @apply border-hairline;
+  }
+
+  /* Hides the scrollbar on horizontally-scrollable rows (e.g. the mobile
+     filter row in TabRow) while keeping the element scrollable. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Rendered markdown body and code block styles */
+@layer components {
+  .post-body h2 {
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .post-body h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-body p {
+    margin-bottom: 1.25rem;
+    color: var(--color-ink);
+  }
+
+  .post-body ul,
+  .post-body ol {
+    @apply font-serif text-[clamp(17px,1.5vw,19px)] leading-relaxed text-ink;
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .post-body ul {
+    list-style: disc;
+  }
+
+  .post-body ol {
+    list-style: decimal;
+  }
+
+  .post-body li {
+    margin-bottom: 0.5rem;
+  }
+
+  .post-body a {
+    @apply text-signal decoration-1 underline-offset-2 hover:text-signal-ink;
+    text-decoration: underline;
+  }
+
+  .post-body strong {
+    @apply font-semibold text-ink;
+  }
+
+  .post-body blockquote {
+    @apply border-l-2 border-signal text-ink-muted;
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    font-style: italic;
+  }
+
+  .post-body img {
+    @apply w-full rounded-md border border-hairline;
+    margin: 1.5rem 0;
+  }
+
+  .post-body pre {
+    @apply rounded-md border border-hairline bg-paper-raised;
+    position: relative;
+    padding: 1rem 3rem 1rem 1rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  .post-body pre code {
+    @apply font-mono text-[13px];
+    background: none;
+    padding: 0;
+  }
+
+  .post-body :not(pre) > code {
+    @apply rounded-sm border border-hairline bg-paper-raised px-1.5 py-0.5 font-mono text-[13px];
+  }
+}
