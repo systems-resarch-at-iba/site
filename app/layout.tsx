@@ -7,6 +7,7 @@ import {
 } from 'next/font/google'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeSwitcher } from '@/components/layout/theme-switcher'
 import { InteractiveDotGrid } from '@/components/effects/interactive-dot-grid'
 
@@ -76,6 +77,7 @@ export default function RootLayout({
         {children}
         <ThemeSwitcher />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
