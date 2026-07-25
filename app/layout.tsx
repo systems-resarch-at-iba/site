@@ -6,6 +6,7 @@ import {
   JetBrains_Mono,
 } from 'next/font/google'
 import './globals.css'
+import { Analytics } from '@vercel/analytics/next'
 import { ThemeSwitcher } from '@/components/layout/theme-switcher'
 import { InteractiveDotGrid } from '@/components/effects/interactive-dot-grid'
 
@@ -74,6 +75,7 @@ export default function RootLayout({
         <InteractiveDotGrid />
         {children}
         <ThemeSwitcher />
+        <Analytics />
       </body>
     </html>
   )
