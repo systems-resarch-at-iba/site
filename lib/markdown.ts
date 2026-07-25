@@ -1,4 +1,5 @@
 import { marked } from 'marked'
+import markedKatex from 'marked-katex-extension'
 
 export interface TocItem {
   id: string
@@ -12,9 +13,29 @@ export interface RenderedPost {
 }
 
 marked.setOptions({ gfm: true, breaks: false })
+// $inline$ and $$block$$ math, rendered to static HTML/MathML at build time
+// via KaTeX (no client-side JS needed to display it). A malformed formula
+// renders as an inline error message instead of throwing and failing the
+// whole page.
+marked.use(markedKatex({ throwOnError: false }))
 
 function stripTags(html: string) {
   return html.replace(/<[^>]+>/g, '').trim()
+}
+
+// Reverses marked's own escaping (&, <, >, ", ' only) for TOC heading text,
+// which gets rendered as plain text (not HTML) in the sidebar, so a literal
+// "&quot;" would otherwise show up as-is instead of decoding to a quote mark.
+// Order matters: decode the entities that can't produce a new "&" first,
+// then "&amp;" last, so a heading that legitimately contains the literal
+// text "&lt;" round-trips correctly instead of being decoded twice.
+function decodeEntities(text: string) {
+  return text
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
 }
 
 /**
@@ -36,7 +57,7 @@ export function renderMarkdown(markdown: string): RenderedPost {
     /<h([23])(?:\s+id="([^"]*)")?([^>]*)>([\s\S]*?)<\/h\1>/g,
     (_match, levelStr: string, existingId: string | undefined, rest: string, inner: string) => {
       const level = parseInt(levelStr, 10)
-      const text = stripTags(inner)
+      const text = decodeEntities(stripTags(inner))
       let id = existingId
       if (!id) {
         idx += 1
