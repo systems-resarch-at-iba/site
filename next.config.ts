@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_COMMIT_SHA: resolveCommitSha(),
   },
+  // Lets Next compile a workspace package's own TS/React source directly
+  // into this build, rather than requiring it to be pre-built separately.
+  // Next resolves this by package name, not a glob, so each new vendor/*
+  // playground project needs its own entry added here.
+  transpilePackages: ["@othello/frontend"],
 };
 
 export default nextConfig;

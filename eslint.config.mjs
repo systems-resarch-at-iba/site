@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // vendor/*/frontend packages lint themselves (own config, own CI).
+    "vendor/**",
   ]),
 ]);
 
