@@ -1,3 +1,6 @@
 [submodule "content"]
 	path = content
 	url = https://github.com/systems-resarch-at-iba/blog.git
+[submodule "vendor/othello"]
+	path = vendor/othello
+	url = https://github.com/systems-resarch-at-iba/othello.git
