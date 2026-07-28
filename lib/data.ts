@@ -59,6 +59,7 @@ export const CONTRIBUTORS: Contributor[] = [
     name: 'Hadiya Muneeb',
     tier: 'contributor',
     role: 'BsCS @ IBA',
+    links: [{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/hadiya-muneeb-b00120370/' }],
   },
   {
     slug: 'hamza-ahmed',
