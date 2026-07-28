@@ -15,9 +15,6 @@ export const CONTRIBUTORS: Contributor[] = [
     tier: 'lead',
     role: 'Assistant Professor & OBE Coordinator',
     bio: 'Assistant Professor and Coordinator of Outcome-Based Education (OBE) at IBA. Works across computer architecture, operating systems, and embedded systems, with a particular interest in RISC-V processor design and a background in nonlinear optimal control, applying optimization and reinforcement learning to real-world problems. Is the one motivating students each year to build non-conventional, project-based work bridging theory and implementation, the kind that make you reconsider your CS degree, in a good way.',
-    email: 'szaffar@iba.edu.pk',
-    github: 'https://github.com/salmanzaffar',
-    linkedin: 'https://www.linkedin.com/in/salmanzaffar/',
     links: [
       { label: 'Email', url: 'mailto:szaffar@iba.edu.pk' },
       { label: 'GitHub', url: 'https://github.com/salmanzaffar' },
@@ -31,7 +28,7 @@ export const CONTRIBUTORS: Contributor[] = [
     role: 'BsCS @ IBA',
     bio: 'Distributed systems, inference, and AI/ML.',
     avatar: '/people/syedtaha.webp',
-    website: 'https://syedtaha.dev',
+    links: [{ label: 'Website', url: 'https://syedtaha.dev' }],
   },
   {
     slug: 'hijab-eijaz',
@@ -39,7 +36,7 @@ export const CONTRIBUTORS: Contributor[] = [
     tier: 'core',
     role: 'BsCS @ IBA',
     bio: 'Distributed systems, security, and inference.',
-    github: 'https://github.com/h-e19',
+    links: [{ label: 'GitHub', url: 'https://github.com/h-e19' }],
   },
   {
     slug: 'muhammad-usman',
@@ -48,13 +45,14 @@ export const CONTRIBUTORS: Contributor[] = [
     role: 'BsCS @ IBA',
     bio: 'Operating systems, distributed systems, and game theory.',
     avatar: '/people/muhammad_usman.webp',
-    linkedin: 'https://www.linkedin.com/in/usman29257/',
+    links: [{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/usman29257/' }],
   },
   {
     slug: 'hamna-sajid',
     name: 'Hamna Sajid',
     tier: 'contributor',
     role: 'BsCS @ IBA',
+    links: [{ label: 'LinkedIn', url: 'https://www.linkedin.com/in/hamnasajid/' }],
   },
   {
     slug: 'hadiya-muneeb',

@@ -55,9 +55,10 @@ export type Contributor = {
   role: string // e.g. "Principal Investigator", "PhD Researcher"
   bio?: string // required for "lead", optional one-liner for "core", unused for "contributor"
   avatar?: string
-  email?: string
-  github?: string
-  website?: string
-  linkedin?: string
+  // Single source of truth for every external link (email, GitHub, website,
+  // LinkedIn, whatever) -- one shape rendered one way, rather than a
+  // separate named field per link type that every consumer has to check
+  // individually (and can silently miss one, as the People page's
+  // "contributor" tier did with LinkedIn before this).
   links?: { label: string; url: string }[]
 }

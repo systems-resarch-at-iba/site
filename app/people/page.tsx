@@ -71,32 +71,14 @@ export default function PeoplePage() {
                   {person.bio && (
                     <p className="mb-2 max-w-xs font-serif text-sm text-ink-muted">{person.bio}</p>
                   )}
-                  <div className="flex items-center gap-4">
-                    {person.website && (
-                      <a
-                        href={person.website}
-                        className="font-sans text-sm text-signal transition-colors hover:text-signal-ink"
-                      >
-                        Website {'\u2197'}
-                      </a>
-                    )}
-                    {person.github && (
-                      <a
-                        href={person.github}
-                        className="font-sans text-sm text-signal transition-colors hover:text-signal-ink"
-                      >
-                        GitHub {'\u2197'}
-                      </a>
-                    )}
-                    {person.linkedin && (
-                      <a
-                        href={person.linkedin}
-                        className="font-sans text-sm text-signal transition-colors hover:text-signal-ink"
-                      >
-                        LinkedIn {'\u2197'}
-                      </a>
-                    )}
-                  </div>
+                  {person.links?.[0] && (
+                    <a
+                      href={person.links[0].url}
+                      className="font-sans text-sm text-signal transition-colors hover:text-signal-ink"
+                    >
+                      {person.links[0].label} {'\u2197'}
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
@@ -112,19 +94,30 @@ export default function PeoplePage() {
                 only 4 contributors today, a 2-up mobile grid would strand
                 the fourth one alone on the left otherwise. */}
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-8">
-              {contributors.map((person) => (
-                <a
-                  key={person.slug}
-                  href={person.github ?? '#'}
-                  className="group flex w-[calc(50%-12px)] flex-col items-center text-center sm:w-[calc(33.333%-16px)] lg:w-[calc(20%-19.2px)]"
-                >
-                  <PersonAvatar size={56} className="mb-3" src={person.avatar} alt={person.name} />
-                  <p className="font-sans text-sm font-medium text-ink transition-colors group-hover:text-signal">
-                    {person.name}
-                  </p>
-                  <p className="font-sans text-xs text-ink-faint">{person.role}</p>
-                </a>
-              ))}
+              {contributors.map((person) => {
+                const link = person.links?.[0]
+                const cardClassName =
+                  'flex w-[calc(50%-12px)] flex-col items-center text-center sm:w-[calc(33.333%-16px)] lg:w-[calc(20%-19.2px)]'
+                const inner = (
+                  <>
+                    <PersonAvatar size={56} className="mb-3" src={person.avatar} alt={person.name} />
+                    <p className="font-sans text-sm font-medium text-ink transition-colors group-hover:text-signal">
+                      {person.name}
+                    </p>
+                    <p className="font-sans text-xs text-ink-faint">{person.role}</p>
+                  </>
+                )
+
+                return link ? (
+                  <a key={person.slug} href={link.url} className={`group ${cardClassName}`}>
+                    {inner}
+                  </a>
+                ) : (
+                  <div key={person.slug} className={cardClassName}>
+                    {inner}
+                  </div>
+                )
+              })}
             </div>
           </section>
         )}
