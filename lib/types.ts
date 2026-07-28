@@ -42,6 +42,12 @@ export type RepoDetails = Project & {
   url: string
 }
 
+export type Playground = {
+  slug: string
+  title: string
+  description: string
+}
+
 export type Contributor = {
   slug: string
   name: string

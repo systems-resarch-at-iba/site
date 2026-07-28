@@ -1,4 +1,12 @@
-import type { AuthorRef, Contributor } from './types'
+import type { AuthorRef, Contributor, Playground } from './types'
+
+export const PLAYGROUNDS: Playground[] = [
+  {
+    slug: 'othello',
+    title: 'Othello',
+    description: 'An MCTS + CNN Othello engine, AlphaZero-style. Play against it in the browser.',
+  },
+]
 
 export const CONTRIBUTORS: Contributor[] = [
   {
