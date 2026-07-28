@@ -24,7 +24,6 @@ export interface AuroraPalette {
 
 export interface Theme {
   id: string
-  label: string
   mode: 'light' | 'dark'
   tokens: ThemeTokens
   aurora: AuroraPalette
@@ -71,7 +70,6 @@ const DARK_BASE = {
 export const THEMES: Theme[] = [
   {
     id: 'light-teal',
-    label: 'Teal (current)',
     mode: 'light',
     tokens: { ...LIGHT_BASE, signal: '#0d9488', signalDim: '#f0fdfa', signalInk: '#0f766e' },
     aurora: {
@@ -82,7 +80,6 @@ export const THEMES: Theme[] = [
   },
   {
     id: 'dark-teal',
-    label: 'Teal',
     mode: 'dark',
     tokens: { ...DARK_BASE, signal: '#2dd4bf', signalDim: '#042f2e', signalInk: '#14b8a6' },
     aurora: {
