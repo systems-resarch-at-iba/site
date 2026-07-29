@@ -71,11 +71,11 @@ export function getPostSlugs(): string[] {
   return getAllPosts().map((p) => p.slug)
 }
 
-export function getPostBySlug(slug: string): (Post & RenderedPost) | undefined {
+export async function getPostBySlug(slug: string): Promise<(Post & RenderedPost) | undefined> {
   if (!fs.existsSync(path.join(POSTS_DIR, `${slug}.md`))) return undefined
   const post = loadPost(`${slug}.md`)
   if (post.status !== 'published') return undefined
-  const { html, toc } = renderMarkdown(post.body)
+  const { html, toc } = await renderMarkdown(post.body)
   return { ...post, html, toc }
 }
 

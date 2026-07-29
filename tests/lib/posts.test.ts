@@ -108,20 +108,20 @@ describe('getAllPosts', () => {
 })
 
 describe('getPostBySlug', () => {
-  it('returns undefined for a slug that does not exist', () => {
-    expect(getPostBySlug('does-not-exist')).toBeUndefined()
+  it('returns undefined for a slug that does not exist', async () => {
+    expect(await getPostBySlug('does-not-exist')).toBeUndefined()
   })
 
-  it('returns undefined for a draft slug, even though the file exists', () => {
+  it('returns undefined for a draft slug, even though the file exists', async () => {
     // Regression test: getPostBySlug used to skip the status check that
     // getAllPosts applies, so a draft was excluded from the index but still
     // fully renderable at its direct URL, contradicting the documented
     // "drafts don't appear on the live site" guarantee.
-    expect(getPostBySlug('a-draft')).toBeUndefined()
+    expect(await getPostBySlug('a-draft')).toBeUndefined()
   })
 
-  it('returns the rendered post with matching fields for a published slug', () => {
-    const post = getPostBySlug('middle-published')
+  it('returns the rendered post with matching fields for a published slug', async () => {
+    const post = await getPostBySlug('middle-published')
     expect(post?.slug).toBe('middle-published')
     expect(post?.title).toBe('Middle Post')
     expect(post?.status).toBe('published')

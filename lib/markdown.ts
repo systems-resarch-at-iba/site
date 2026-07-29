@@ -1,5 +1,6 @@
 import { marked } from 'marked'
 import markedKatex from 'marked-katex-extension'
+import { getSingletonHighlighter, type BundledLanguage } from 'shiki'
 
 export interface TocItem {
   id: string
@@ -18,6 +19,56 @@ marked.setOptions({ gfm: true, breaks: false })
 // renders as an inline error message instead of throwing and failing the
 // whole page.
 marked.use(markedKatex({ throwOnError: false }))
+
+// Highlighted at build time (server-side, once per post) rather than
+// client-side: no extra JS shipped to the browser, no flash of unstyled
+// code. `defaultColor: false` makes shiki emit --shiki-light/--shiki-dark
+// CSS variables per token instead of baking in one theme's colors, so the
+// site's existing light/dark toggle (data-theme attribute) can pick between
+// them -- see .post-body pre.shiki in globals.css.
+const SHIKI_THEMES = { light: 'github-light', dark: 'github-dark' } as const
+const PLAINTEXT_LANG = 'text'
+
+let highlighter: Awaited<ReturnType<typeof getSingletonHighlighter>>
+
+marked.use({
+  renderer: {
+    code({ text, lang }) {
+      const language = lang?.split(/\s+/)[0]
+      const resolvedLang = language && highlighter.getLoadedLanguages().includes(language)
+        ? language
+        : PLAINTEXT_LANG
+      return highlighter.codeToHtml(text, {
+        lang: resolvedLang,
+        themes: SHIKI_THEMES,
+        defaultColor: false,
+      })
+    },
+  },
+})
+
+// Fence languages not yet loaded into the shared highlighter throw on load
+// (e.g. a typo, or a language that isn't a real Shiki grammar); those fall
+// back to a plain, unhighlighted block above rather than failing the build.
+async function ensureLanguagesLoaded(langs: string[]) {
+  await Promise.all(
+    langs.map(async (lang) => {
+      try {
+        await highlighter.loadLanguage(lang as BundledLanguage)
+      } catch {
+        // Falls back to PLAINTEXT_LANG in the renderer above.
+      }
+    })
+  )
+}
+
+function fenceLanguages(markdown: string): string[] {
+  const langs = new Set<string>()
+  for (const match of markdown.matchAll(/^```\s*([\w-]+)/gm)) {
+    langs.add(match[1])
+  }
+  return [...langs]
+}
 
 function stripTags(html: string) {
   return html.replace(/<[^>]+>/g, '').trim()
@@ -48,7 +99,13 @@ function decodeEntities(text: string) {
  * title rendered outside the markdown body) instead of client-side over the
  * DOM after a runtime fetch.
  */
-export function renderMarkdown(markdown: string): RenderedPost {
+export async function renderMarkdown(markdown: string): Promise<RenderedPost> {
+  highlighter ??= await getSingletonHighlighter({
+    themes: Object.values(SHIKI_THEMES),
+    langs: [],
+  })
+  await ensureLanguagesLoaded(fenceLanguages(markdown))
+
   const rawHtml = marked.parse(markdown, { async: false }) as string
   const toc: TocItem[] = []
   let idx = 0

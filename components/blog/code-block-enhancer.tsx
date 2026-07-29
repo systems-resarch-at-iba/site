@@ -12,6 +12,12 @@ const CHECK_ICON =
  * a copy icon top-right that swaps to a checkmark for 1.5s on click. Runs
  * client-side against the server-rendered markdown output, since the body
  * itself is static HTML.
+ *
+ * Each <pre> gets wrapped in a plain (non-scrolling) div that the button is
+ * appended to instead of <pre> itself. <pre> is the one with overflow-x:
+ * auto for long lines; if the button were a child of that scrolling element,
+ * it would scroll along with the code instead of staying pinned to the
+ * corner (see .code-block-wrapper in globals.css).
  */
 export function CodeBlockEnhancer() {
   useEffect(() => {
@@ -24,11 +30,16 @@ export function CodeBlockEnhancer() {
       const code = pre.querySelector('code')
       if (!code) return
 
+      const wrapper = document.createElement('div')
+      wrapper.className = 'code-block-wrapper'
+      pre.parentNode?.insertBefore(wrapper, pre)
+      wrapper.appendChild(pre)
+
       const button = document.createElement('button')
       button.type = 'button'
       button.setAttribute('aria-label', 'Copy code')
       button.className =
-        'absolute top-2 right-2 cursor-pointer rounded-sm border border-hairline bg-paper p-1.5 text-ink-faint transition-colors hover:text-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2'
+        'absolute top-2 right-2 cursor-pointer rounded-sm border border-hairline bg-paper-raised p-1.5 text-ink-faint transition-colors hover:text-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2'
       button.innerHTML = COPY_ICON
 
       button.addEventListener('click', async () => {
@@ -39,7 +50,7 @@ export function CodeBlockEnhancer() {
         }, 1500)
       })
 
-      pre.appendChild(button)
+      wrapper.appendChild(button)
     })
   }, [])
 

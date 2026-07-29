@@ -186,11 +186,19 @@
     margin: 1.5rem 0;
   }
 
+  /* Wraps each <pre> (see CodeBlockEnhancer) so the copy button's
+     containing block is this non-scrolling wrapper, not the <pre> itself.
+     A button positioned absolute *inside* the scrolling element would
+     scroll along with the code; splitting positioning (wrapper) from
+     scrolling (pre) keeps it pinned to the corner regardless of scroll. */
+  .post-body .code-block-wrapper {
+    position: relative;
+    margin: 1.5rem 0;
+  }
+
   .post-body pre {
     @apply rounded-md border border-hairline bg-paper-raised;
-    position: relative;
     padding: 1rem 3rem 1rem 1rem;
-    margin: 1.5rem 0;
     overflow-x: auto;
   }
 
@@ -198,6 +206,23 @@
     @apply font-mono text-[13px];
     background: none;
     padding: 0;
+  }
+
+  /* Shiki (lib/markdown.ts) renders with defaultColor: false, so each token
+     carries both --shiki-light and --shiki-dark as CSS variables instead of
+     one baked-in color. Which one actually applies is picked here, keyed off
+     the same [data-theme] attribute the theme switcher already sets on
+     <html> -- the block's own bg-paper-raised background (above) is left
+     alone rather than using shiki's theme background, so it still matches
+     the rest of the site's surface color. */
+  .post-body pre.shiki,
+  .post-body pre.shiki span {
+    color: var(--shiki-light);
+  }
+
+  :root[data-theme='dark'] .post-body pre.shiki,
+  :root[data-theme='dark'] .post-body pre.shiki span {
+    color: var(--shiki-dark);
   }
 
   .post-body :not(pre) > code {
