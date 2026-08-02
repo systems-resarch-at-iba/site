@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     template: '%s | Systems Research @ IBA',
   },
   description: 'Research in systems design, architecture, and beyond.',
+  verification: {
+    google: 'N29n66A-R6UlUUjYwMZAIOKDKWKeQFZKrrmDS__cEB8',
+  },
   // TODO: metadataBase needs a real URL object once the production domain
   // is known (new URL('https://...')); left unset until then.
   openGraph: {
