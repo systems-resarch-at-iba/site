@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Navigation } from '@/components/layout/navigation'
 import { Footer } from '@/components/layout/footer'
 import { HeroSection } from '@/components/sections/hero-section'
@@ -31,6 +32,10 @@ const RESEARCH_AREAS = [
       'Investigating how compact a model architecture can be made without sacrificing performance, through architecture search, knowledge distillation, and quantization aimed at constrained hardware.',
   },
 ]
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 export default async function LandingPage() {
   const recentPosts = getAllPosts().slice(0, 3)

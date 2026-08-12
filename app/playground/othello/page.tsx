@@ -5,7 +5,7 @@ import { PersonAvatar } from '@/components/ui/person-avatar'
 import { getContributor } from '@/lib/data'
 import { OthelloBoard } from '@othello/frontend'
 
-export const metadata: Metadata = { title: 'Othello' }
+export const metadata: Metadata = { title: 'Othello', alternates: { canonical: '/playground/othello' } }
 
 const OTHELLO_AUTHOR_SLUGS = ['syed-taha', 'hamna-sajid', 'hadiya-muneeb']
 

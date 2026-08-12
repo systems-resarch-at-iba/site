@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/footer'
 import { BlogIndex } from '@/components/blog/blog-index'
 import { getAllPosts } from '@/lib/posts'
 
-export const metadata: Metadata = { title: 'Blog' }
+export const metadata: Metadata = { title: 'Blog', alternates: { canonical: '/blog' } }
 
 export default function BlogPage() {
   const posts = getAllPosts().map((post) => ({

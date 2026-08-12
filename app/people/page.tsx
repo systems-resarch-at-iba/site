@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/footer'
 import { PersonAvatar } from '@/components/ui/person-avatar'
 import { CONTRIBUTORS } from '@/lib/data'
 
-export const metadata: Metadata = { title: 'People' }
+export const metadata: Metadata = { title: 'People', alternates: { canonical: '/people' } }
 
 export default function PeoplePage() {
   const lead = CONTRIBUTORS.find((p) => p.tier === 'lead')

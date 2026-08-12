@@ -21,7 +21,11 @@ export async function generateMetadata({
   const { slug } = await params
   const post = await getPostBySlug(slug)
   if (!post) return {}
-  return { title: post.title, description: post.excerpt }
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/blog/${slug}` },
+  }
 }
 
 export default async function BlogPostPage({

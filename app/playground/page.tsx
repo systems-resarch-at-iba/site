@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/footer'
 import { PlaygroundGrid } from '@/components/sections/playground-grid'
 import { PLAYGROUNDS } from '@/lib/data'
 
-export const metadata: Metadata = { title: 'Playground' }
+export const metadata: Metadata = { title: 'Playground', alternates: { canonical: '/playground' } }
 
 export default function PlaygroundIndexPage() {
   return (

@@ -15,6 +15,7 @@ function resolveCommitSha(): string {
 }
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   env: {
     NEXT_PUBLIC_COMMIT_SHA: resolveCommitSha(),
   },

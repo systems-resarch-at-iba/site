@@ -11,6 +11,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeSwitcher } from '@/components/layout/theme-switcher'
 import { InteractiveDotGrid } from '@/components/effects/interactive-dot-grid'
+import { SITE_URL } from '@/lib/site'
 
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -37,6 +38,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Systems Research @ IBA',
     template: '%s | Systems Research @ IBA',
@@ -45,12 +47,10 @@ export const metadata: Metadata = {
   verification: {
     google: 'N29n66A-R6UlUUjYwMZAIOKDKWKeQFZKrrmDS__cEB8',
   },
-  // TODO: metadataBase needs a real URL object once the production domain
-  // is known (new URL('https://...')); left unset until then.
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'To be added....',
+    url: SITE_URL,
     siteName: 'Systems Research @ IBA',
   },
   twitter: {

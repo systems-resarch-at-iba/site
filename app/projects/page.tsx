@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/footer'
 import { ProjectsGrid } from '@/components/sections/projects-grid'
 import { getRepos } from '@/lib/github'
 
-export const metadata: Metadata = { title: 'Projects' }
+export const metadata: Metadata = { title: 'Projects', alternates: { canonical: '/projects' } }
 
 export default async function ProjectsPage() {
   const repos = await getRepos()
