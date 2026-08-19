@@ -95,6 +95,12 @@ export const AUTHORS: Record<string, AuthorRef> = {
     bio: 'Distributed systems, security, and inference.',
     github: 'https://github.com/h-e19',
   },
+  'muhammad-usman': {
+    name: 'Muhammad Usman',
+    slug: 'muhammad-usman',
+    bio: 'Operating systems, distributed systems, and game theory.',
+    avatar: '/people/muhammad_usman.webp',
+  },
 }
 
 export function getContributor(slug: string): Contributor | undefined {
