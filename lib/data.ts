@@ -75,26 +75,27 @@ export const CONTRIBUTORS: Contributor[] = [
   },
 ]
 
-// Post authors: a superset of CONTRIBUTORS (adds the institutional byline
-// used for group announcements) keyed by the slug used in post frontmatter.
+// Post authors, keyed by the slug used in post frontmatter: every
+// CONTRIBUTORS entry (derived, so the two lists can't drift apart) plus the
+// institutional byline used for group announcements.
 export const AUTHORS: Record<string, AuthorRef> = {
   'systems-research-team': {
     name: 'Systems Research Team',
     slug: 'systems-research-team',
     bio: 'The collective byline for group announcements and updates.',
   },
-  'syed-taha': {
-    name: 'Syed Taha',
-    slug: 'syed-taha',
-    bio: 'Distributed systems, inference, and AI/ML.',
-    avatar: '/people/syedtaha.webp',
-  },
-  'hijab-eijaz': {
-    name: 'Hijab Eijaz',
-    slug: 'hijab-eijaz',
-    bio: 'Distributed systems, security, and inference.',
-    github: 'https://github.com/h-e19',
-  },
+  ...Object.fromEntries(
+    CONTRIBUTORS.map((c): [string, AuthorRef] => [
+      c.slug,
+      {
+        name: c.name,
+        slug: c.slug,
+        bio: c.bio ?? '',
+        avatar: c.avatar,
+        link: c.links?.[0],
+      },
+    ])
+  ),
 }
 
 export function getContributor(slug: string): Contributor | undefined {

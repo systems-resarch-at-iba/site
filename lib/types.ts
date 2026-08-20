@@ -9,7 +9,7 @@ export type AuthorRef = {
   slug: string
   avatar?: string
   bio: string
-  github?: string
+  link?: { label: string; url: string }
 }
 
 export type Post = {

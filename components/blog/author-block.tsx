@@ -13,14 +13,14 @@ export function AuthorBlock({ author }: { author: AuthorRef }) {
         <p className="mt-1 font-display text-base font-semibold text-ink">{author.name}</p>
         <p className="mt-1 font-serif text-sm text-ink-muted">{author.bio}</p>
         <div className="mt-3 flex items-center gap-4 font-sans text-sm">
-          {author.github && (
+          {author.link && (
             <a
-              href={author.github}
+              href={author.link.url}
               target="_blank"
               rel="noopener noreferrer"
               className="text-signal transition-colors hover:text-signal-ink"
             >
-              GitHub {'\u2197'}
+              {author.link.label} {'\u2197'}
             </a>
           )}
           <Link href="/blog" className="text-signal transition-colors hover:text-signal-ink">
