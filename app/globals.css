@@ -79,6 +79,9 @@
        individual dots can react to the cursor. A CSS background pattern
        can't address individual cells in response to mouse position. */
     background-repeat: no-repeat;
+    /* One screen tall, so the glow keeps its size however long the page is.
+       Without it, the percentage stops below scale with the page height. */
+    background-size: 100% 100vh;
     background-image:
       radial-gradient(circle at 8% -5%, var(--aurora-1), transparent 32%),
       radial-gradient(circle at 45% -8%, var(--aurora-2), transparent 30%),
@@ -182,8 +185,126 @@
   }
 
   .post-body img {
-    @apply w-full rounded-md border border-hairline;
+    @apply w-full rounded-md;
     margin: 1.5rem 0;
+  }
+
+  /* Tables: the wrapper (see renderMarkdown) draws the rounded outline and scrolls a table that
+     is wider than the column. Columns are as wide as their content and cells do not wrap. A
+     column aligned with a colon in the Markdown keeps its alignment through the align
+     attribute that marked writes. */
+  .post-body .table-wrap {
+    @apply w-fit max-w-full overflow-x-auto rounded-md border border-hairline;
+    margin: 1.5rem 0;
+  }
+
+  .post-body table {
+    @apply font-sans text-sm;
+    width: max-content;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .post-body th,
+  .post-body td {
+    @apply border-b border-hairline px-3.5 py-2.5 text-left align-top text-ink;
+    white-space: nowrap;
+  }
+
+  .post-body th {
+    @apply border-hairline-strong text-xs font-semibold uppercase tracking-wider text-ink-muted;
+  }
+
+  .post-body tbody tr:last-child td {
+    border-bottom-width: 0;
+  }
+
+  .post-body th[align='right'],
+  .post-body td[align='right'] {
+    text-align: right;
+  }
+
+  .post-body th[align='center'],
+  .post-body td[align='center'] {
+    text-align: center;
+  }
+
+  .post-body td code,
+  .post-body th code {
+    @apply px-1 py-px text-xs;
+  }
+
+  /* A display equation wider than the column scrolls inside its own box instead of pushing the
+     page sideways. */
+  .post-body .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  /* On a narrow screen the text is justified, with hyphenation so that the gaps stay small. */
+  @media (max-width: 639px) {
+    .post-body p,
+    .post-body li {
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    /* References hold long words and links, which leave wide gaps when justified. */
+    .post-body section.footnotes li,
+    .post-body section.footnotes li p {
+      text-align: left;
+    }
+  }
+
+  /* Footnotes, in the style of GitHub: a divider, then an ordered list of small muted text. */
+  .post-body .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .post-body sup a {
+    text-decoration: none;
+  }
+
+  .post-body section.footnotes {
+    @apply border-t border-hairline;
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+  }
+
+  .post-body section.footnotes ol {
+    @apply font-sans text-sm text-ink-muted;
+    margin-bottom: 0;
+    line-height: 1.55;
+  }
+
+  .post-body section.footnotes li {
+    margin-bottom: 0.75rem;
+  }
+
+  .post-body section.footnotes li p {
+    @apply font-sans text-sm text-ink-muted;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .post-body a[data-footnote-backref] {
+    margin-left: 0.25rem;
+    text-decoration: none;
+  }
+
+  .post-body .footnote-backref-icon {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    vertical-align: -0.1em;
   }
 
   /* Wraps each <pre> (see CodeBlockEnhancer) so the copy button's

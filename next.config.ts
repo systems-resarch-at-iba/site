@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
   // Next resolves this by package name, not a glob, so each new vendor/*
   // playground project needs its own entry added here.
   transpilePackages: ["@othello/frontend"],
+  // The dev server blocks requests from any host other than localhost. This pattern lets the site
+  // open through the machine's address on the local network, so a change of that address does not
+  // need a change here.
+  allowedDevOrigins: ["192.168.*.*"],
 };
 
 export default nextConfig;

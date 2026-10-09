@@ -1,41 +1,79 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { TocItem } from '@/lib/markdown'
 
+/**
+ * The heading above 25% of the viewport height that is closest to it. Computed on every scroll,
+ * so a fast jump through the post still lands on the right entry.
+ */
 function useScrollSpy(items: TocItem[]) {
   const [activeId, setActiveId] = useState('')
 
   useEffect(() => {
     if (items.length === 0) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveId(entry.target.id)
-        })
-      },
-      { rootMargin: '-20% 0% -70% 0%' }
-    )
+    const headings = items
+      .map((item) => document.getElementById(item.id))
+      .filter((el): el is HTMLElement => el !== null)
+    if (headings.length === 0) return
 
-    items.forEach((item) => {
-      const el = document.getElementById(item.id)
-      if (el) observer.observe(el)
-    })
+    const update = () => {
+      const line = window.innerHeight * 0.25
+      let current = headings[0]
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top <= line) current = heading
+        else break
+      }
+      setActiveId(current.id)
+    }
 
-    return () => observer.disconnect()
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [items])
 
   return activeId
 }
 
-function TocList({ items, activeId }: { items: TocItem[]; activeId: string }) {
+function TocList({
+  items,
+  activeId,
+  scrollable = false,
+}: {
+  items: TocItem[]
+  activeId: string
+  scrollable?: boolean
+}) {
+  const listRef = useRef<HTMLUListElement>(null)
+
+  // Keeps the active entry inside the list when the list is taller than the space it has.
+  useEffect(() => {
+    const list = listRef.current
+    const active = list?.querySelector<HTMLElement>('[data-active="true"]')
+    if (!list || !active) return
+
+    const margin = 16
+    const listBox = list.getBoundingClientRect()
+    const activeBox = active.getBoundingClientRect()
+    if (activeBox.top - margin < listBox.top) {
+      list.scrollBy({ top: activeBox.top - margin - listBox.top, behavior: 'smooth' })
+    } else if (activeBox.bottom + margin > listBox.bottom) {
+      list.scrollBy({ top: activeBox.bottom + margin - listBox.bottom, behavior: 'smooth' })
+    }
+  }, [activeId])
+
   return (
-    <ul className="space-y-2">
+    <ul ref={listRef} className={scrollable ? 'no-scrollbar min-h-0 space-y-2 overflow-y-auto' : 'space-y-2'}>
       {items.map((item) => (
         <li key={item.id}>
           <a
             href={`#${item.id}`}
+            data-active={activeId === item.id}
             onClick={(e) => {
               e.preventDefault()
               document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })
@@ -92,12 +130,12 @@ export function TableOfContents({ items, variant }: TableOfContentsProps) {
   }
 
   return (
-    <nav aria-label="On this page" className="hidden lg:block">
-      <div className="sticky top-24">
-        <h3 className="mb-3 border-b border-hairline pb-3 font-sans text-xs font-semibold uppercase tracking-widest text-ink-muted">
+    <nav aria-label="On this page" className="hidden h-full lg:block">
+      <div className="sticky top-24 flex max-h-[calc(100vh-8rem)] flex-col">
+        <h3 className="mb-3 shrink-0 border-b border-hairline pb-3 font-sans text-xs font-semibold uppercase tracking-widest text-ink-muted">
           On this page
         </h3>
-        <TocList items={items} activeId={activeId} />
+        <TocList items={items} activeId={activeId} scrollable />
       </div>
     </nav>
   )

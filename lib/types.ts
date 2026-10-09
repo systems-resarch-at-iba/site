@@ -21,6 +21,7 @@ export type Post = {
   category: string
   tags: string[]
   author: AuthorRef
+  coAuthors: AuthorRef[] // further authors named in the frontmatter, in order
   publishedAt: string | null // null while draft
   updatedAt: string
   readingMinutes: number // computed from body word count

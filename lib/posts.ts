@@ -12,6 +12,7 @@ interface Frontmatter {
   date: string
   updatedAt?: string
   author: string // slug into AUTHORS
+  coAuthors?: string[] // further slugs into AUTHORS
   category: string
   tags: string[]
   excerpt: string
@@ -28,6 +29,13 @@ function loadPost(filename: string): Post {
   if (!author) {
     throw new Error(`content/posts/${filename}: unknown author slug "${data.author}"`)
   }
+  const coAuthors = (data.coAuthors ?? []).map((slug) => {
+    const coAuthor = AUTHORS[slug]
+    if (!coAuthor) {
+      throw new Error(`content/posts/${filename}: unknown co-author slug "${slug}"`)
+    }
+    return coAuthor
+  })
 
   return {
     slug,
@@ -38,6 +46,7 @@ function loadPost(filename: string): Post {
     category: data.category,
     tags: data.tags ?? [],
     author,
+    coAuthors,
     publishedAt: data.status === 'draft' ? null : data.date,
     updatedAt: data.updatedAt ?? data.date,
     readingMinutes: estimateReadingMinutes(content),

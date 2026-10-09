@@ -1,4 +1,5 @@
 import { marked } from 'marked'
+import markedFootnote from 'marked-footnote'
 import markedKatex from 'marked-katex-extension'
 import { getSingletonHighlighter, type BundledLanguage } from 'shiki'
 
@@ -14,11 +15,25 @@ export interface RenderedPost {
 }
 
 marked.setOptions({ gfm: true, breaks: false })
+
+// The arrow of a footnote back link. It is an SVG string and not a React component because it
+// goes into the HTML of a post, which the page injects as it is.
+const BACKREF_ICON = [
+  '<svg class="footnote-backref-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"',
+  '  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">',
+  '  <path d="M20 20v-7a4 4 0 0 0-4-4H4"/>',
+  '  <path d="M9 14 4 9l5-5"/>',
+  '</svg>',
+].join('')
+
 // $inline$ and $$block$$ math, rendered to static HTML/MathML at build time
 // via KaTeX (no client-side JS needed to display it). A malformed formula
 // renders as an inline error message instead of throwing and failing the
 // whole page.
 marked.use(markedKatex({ throwOnError: false }))
+// [^1] footnotes, rendered as a numbered list at the end of the post with a link back to each
+// reference, the way GitHub renders them.
+marked.use(markedFootnote())
 
 // Highlighted at build time (server-side, once per post) rather than
 // client-side: no extra JS shipped to the browser, no flash of unstyled
@@ -120,12 +135,22 @@ export async function renderMarkdown(markdown: string): Promise<RenderedPost> {
         idx += 1
         id = `heading-${idx}`
       }
-      toc.push({ id, level, text })
+      // The footnote list carries a visually hidden heading that does not belong in the contents.
+      if (!rest.includes('sr-only')) toc.push({ id, level, text })
       return `<h${level} id="${id}"${rest}>${inner}</h${level}>`
     }
   )
 
-  return { html, toc }
+  // A wrapper lets a table wider than the column scroll sideways instead of wrapping its cells.
+  const wrapped = html
+    .replaceAll('<table>', '<div class="table-wrap"><table>')
+    .replaceAll('</table>', '</table></div>')
+
+  // The arrow character of the footnote back links shows as an emoji on some phones and as a
+  // different glyph on other systems, so each back link draws the same arrow as an SVG.
+  const withArrows = wrapped.replaceAll('\u21A9', BACKREF_ICON)
+
+  return { html: withArrows, toc }
 }
 
 /** ~200 wpm, computed from body word count. */

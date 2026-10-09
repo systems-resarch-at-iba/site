@@ -43,3 +43,62 @@ export function GitHubIcon({ className = '' }: { className?: string }) {
     </svg>
   )
 }
+
+function OutlineIcon({ className = '', children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  )
+}
+
+export function BlogIcon({ className = '' }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+    </OutlineIcon>
+  )
+}
+
+export function ProjectsIcon({ className = '' }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M18 19a5 5 0 0 1-5-5v8" />
+      <path d="M9 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v5" />
+      <circle cx="13" cy="12" r="2" />
+      <circle cx="20" cy="19" r="2" />
+    </OutlineIcon>
+  )
+}
+
+export function PlaygroundIcon({ className = '' }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <line x1="6" x2="10" y1="11" y2="11" />
+      <line x1="8" x2="8" y1="9" y2="13" />
+      <line x1="15" x2="15.01" y1="12" y2="12" />
+      <line x1="18" x2="18.01" y1="10" y2="10" />
+      <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z" />
+    </OutlineIcon>
+  )
+}
+
+export function PeopleIcon({ className = '' }: { className?: string }) {
+  return (
+    <OutlineIcon className={className}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+    </OutlineIcon>
+  )
+}

@@ -72,14 +72,14 @@ export default async function BlogPostPage({
           </div>
         </header>
 
-        <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-12 border-t border-hairline px-6 py-12 lg:grid-cols-[680px_1fr]">
+        <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 border-t border-hairline px-6 py-12 lg:grid-cols-[780px_1fr]">
           <article className="min-w-0">
             <TableOfContents items={post.toc} variant="mobile" />
 
             <div className="post-body" dangerouslySetInnerHTML={{ __html: post.html }} />
             <CodeBlockEnhancer />
 
-            <AuthorBlock author={post.author} />
+            <AuthorBlock author={post.author} coAuthors={post.coAuthors} />
             <PostNav prev={prev} next={next} />
           </article>
 
