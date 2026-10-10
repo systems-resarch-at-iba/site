@@ -134,6 +134,12 @@
 
 /* Rendered markdown body and code block styles */
 @layer components {
+  /* Leaves room above a heading reached by a link or an address, so it does not stop under the
+     navigation bar. */
+  .post-body :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: 6rem;
+  }
+
   .post-body h2 {
     margin-top: 3rem;
     margin-bottom: 1.25rem;

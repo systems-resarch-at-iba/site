@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { MouseEvent } from 'react'
 import type { TocItem } from '@/lib/markdown'
 
 /**
@@ -40,6 +41,21 @@ function useScrollSpy(items: TocItem[]) {
   return activeId
 }
 
+/**
+ * Scrolls to a heading and records it in the address bar without adding a history entry, so the
+ * back button leaves the post instead of stepping through every section that was clicked.
+ * Smooth scrolling is skipped when the visitor prefers reduced motion.
+ */
+function jumpTo(event: MouseEvent<HTMLAnchorElement>, id: string) {
+  const target = document.getElementById(id)
+  if (!target) return
+
+  event.preventDefault()
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  window.history.replaceState(window.history.state, '', `#${id}`)
+}
+
 function TocList({
   items,
   activeId,
@@ -68,24 +84,26 @@ function TocList({
   }, [activeId])
 
   return (
-    <ul ref={listRef} className={scrollable ? 'no-scrollbar min-h-0 space-y-2 overflow-y-auto' : 'space-y-2'}>
+    <ul
+      ref={listRef}
+      className={
+        scrollable ? 'no-scrollbar min-h-0 space-y-[0.6rem] overflow-y-auto' : 'space-y-[0.6rem]'
+      }
+    >
       {items.map((item) => (
         <li key={item.id}>
           <a
             href={`#${item.id}`}
             data-active={activeId === item.id}
-            onClick={(e) => {
-              e.preventDefault()
-              document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })
-            }}
+            onClick={(e) => jumpTo(e, item.id)}
             className={`
-              block border-l-2 py-0.5 pl-3 font-sans text-sm transition-colors duration-150
+              block font-sans text-[0.8125rem] leading-snug transition-colors duration-150
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2
-              ${item.level === 3 ? 'ml-3 font-normal' : 'font-medium'}
+              ${item.level === 3 ? 'ml-3' : ''}
               ${
                 activeId === item.id
-                  ? 'border-signal text-signal'
-                  : 'border-transparent text-ink-muted hover:text-ink'
+                  ? 'font-medium text-signal'
+                  : 'text-ink-muted hover:text-ink hover:underline'
               }
             `}
           >
@@ -104,8 +122,8 @@ interface TableOfContentsProps {
 
 /**
  * Right-rail "On this page". `variant="desktop"` is a
- * sticky rail with a scroll-spy left border, meant for the right grid
- * column at lg+. `variant="mobile"` is a collapsible disclosure meant to
+ * sticky list that sits against the right edge of the grid and highlights the
+ * section being read, meant for the right grid column at lg+. `variant="mobile"` is a collapsible disclosure meant to
  * sit inline under the title on tablet/mobile, never a floating overlay.
  * Callers render whichever variant fits their layout slot and hide the
  * other with a breakpoint class, since the two live in different places in
@@ -119,7 +137,7 @@ export function TableOfContents({ items, variant }: TableOfContentsProps) {
   if (variant === 'mobile') {
     return (
       <details className="mb-8 rounded-md border border-hairline bg-paper-raised p-4 lg:hidden">
-        <summary className="cursor-pointer font-sans text-xs font-semibold uppercase tracking-widest text-ink-muted">
+        <summary className="cursor-pointer font-sans text-sm font-semibold text-ink">
           On this page
         </summary>
         <div className="mt-3">
@@ -130,9 +148,9 @@ export function TableOfContents({ items, variant }: TableOfContentsProps) {
   }
 
   return (
-    <nav aria-label="On this page" className="hidden h-full lg:block">
+    <nav aria-label="On this page" className="hidden h-full w-full max-w-64 lg:ml-auto lg:block">
       <div className="sticky top-24 flex max-h-[calc(100vh-8rem)] flex-col">
-        <h3 className="mb-3 shrink-0 border-b border-hairline pb-3 font-sans text-xs font-semibold uppercase tracking-widest text-ink-muted">
+        <h3 className="mb-4 shrink-0 border-b border-hairline pb-2.5 font-sans text-sm font-semibold text-ink">
           On this page
         </h3>
         <TocList items={items} activeId={activeId} scrollable />
