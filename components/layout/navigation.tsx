@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { BlogIcon, GitHubIcon, PeopleIcon, PlaygroundIcon, ProjectsIcon } from '../ui/icons'
+import { Logo } from '../ui/logo'
 
 const NAV_LINKS = [
   { label: 'Blog', href: '/blog', Icon: BlogIcon },
@@ -18,8 +19,8 @@ const NAV_LINKS = [
  * center regardless of how wide the wordmark or CTA are.
  *
  * Below `sm`, the four labels plus the wordmark and GitHub button don't fit
- * inline anymore, so each link shrinks to an icon in the same grid slot.
- */
+ * inline anymore, so the wordmark shrinks to the logo mark and each link to an icon
+ * in the same grid slot. */
 export function Navigation() {
   const pathname = usePathname()
   const isActive = (href: string) => pathname.startsWith(href)
@@ -27,13 +28,14 @@ export function Navigation() {
   return (
     <div className="sticky top-3 z-50 flex justify-center px-3 sm:top-4 sm:px-4">
       <div className="w-full max-w-3xl">
-        <nav className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-full bg-paper-raised/60 py-2 pl-4 pr-2 shadow-nav backdrop-blur-lg sm:gap-4 sm:pl-5">
+        <nav className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-full bg-paper-raised/60 py-2 pl-6 pr-2 shadow-nav backdrop-blur-lg sm:gap-4 sm:pl-7">
           <Link
             href="/"
-            className="justify-self-start truncate font-display text-[15px] font-bold tracking-tight text-ink transition-colors hover:text-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2"
+            aria-label="Systems Research @ IBA"
+            className="justify-self-start rounded-sm text-ink transition-colors hover:text-signal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2"
           >
-            <span className="sm:hidden">SR@IBA</span>
-            <span className="hidden sm:inline">Systems Research @ IBA</span>
+            <Logo kind="icon" size={26} className="sm:hidden" />
+            <Logo kind="full" size={22} className="hidden sm:block" />
           </Link>
 
           <div className="hidden items-center justify-self-center gap-6 sm:flex">
